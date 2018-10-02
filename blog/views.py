@@ -25,6 +25,8 @@ class AllPost(ListView):
     context_object_name = 'posts'
     ordering = ['-date_created']
 
+    paginate_by = 5
+
 
 class SinglePost(DetailView):
     model = Post
