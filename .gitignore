@@ -1,0 +1,4 @@
+*.pyc
+*Vagrantfile
+*.log
+*.sqlite3

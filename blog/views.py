@@ -8,7 +8,11 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
+
+from rest_framework import viewsets
+
 from .models import Post
+from . import serializer, permissions
 
 
 # Create your views here.
@@ -18,10 +22,6 @@ def home(request):
 
 class AllPost(ListView):
     model = Post
-
-    # Template Stucture
-    # <app>/<model>_<viewtype>.html
-
     template_name = 'blog/home.html'
     context_object_name = 'posts'
     ordering = ['-date_created']
@@ -40,7 +40,8 @@ class CreatePost(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        return super().form_valid(form)
+        # return super().form_valid(form)
+        return form_valid(form)
 
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -50,7 +51,8 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        return super().form_valid(form)
+        # return super().form_valid(form)
+        return form_valid(form)
 
     def test_func(self):
         post = self.get_object()
@@ -84,3 +86,10 @@ class UserPost(ListView):
 
 def about(request):
     return render(request, 'blog/about.html')
+
+
+class PostViewSet(viewsets.ModelViewSet):
+
+    serializer_class = serializer.PostSerializer
+    permission_classes = (permissions.PostAPIPermission,)
+    queryset = Post.objects.all()
